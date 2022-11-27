@@ -26,6 +26,7 @@ import LoginModal from "../components/LoginModal";
 import { CheckUsernameDuplicationAPI } from "../apis/CheckUsernameDuplicationAPI";
 import { CheckEmailDuplicationAPI } from "../apis/CheckEmailDuplicationAPI";
 import { SignUpAPI } from "../apis/SignUpAPI";
+import { SendEmailAPI } from "../apis/SendEmailAPI";
 
 function Copyright(props) {
   return (
@@ -68,6 +69,10 @@ export default function SignUp() {
     CheckEmailDuplicationAPI(values.email, setEmailDuplication);
   };
 
+  const handleClickSendEmail = () => {
+    SendEmailAPI(values, setSendCode, setCodeErr);
+  };
+
   const [values, setValues] = React.useState({
     userName: "",
     amount: "",
@@ -75,12 +80,15 @@ export default function SignUp() {
     weight: "",
     weightRange: "",
     email: "",
+    code: "",
     showPassword: false,
   });
 
   const [signUpErr, setSignUpErr] = React.useState(false);
   const [usernameDuplication, setUsernameDuplication] = React.useState(false);
   const [emailDuplication, setEmailDuplication] = React.useState(false);
+  const [sendCode, setSendCode] = React.useState(false);
+  const [codeErr, setCodeErr] = React.useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -150,7 +158,7 @@ export default function SignUp() {
                 />
               </Grid>
               <Grid item xs={3}>
-                {!usernameDuplication ? (
+                {!usernameDuplication && values.userName ? (
                   <Button
                     variant="contained"
                     onClick={handleClickUsernameCheck}
@@ -191,7 +199,7 @@ export default function SignUp() {
                 />
               </Grid>
               <Grid item xs={3}>
-                {!emailDuplication ? (
+                {!emailDuplication && values.email ? (
                   <Button
                     variant="contained"
                     onClick={handleClickEmailCheck}
@@ -217,6 +225,50 @@ export default function SignUp() {
                   </Button>
                 )}
               </Grid>
+              {emailDuplication ? (
+                <>
+                  <Grid item xs={9}>
+                    <TextField
+                      value={values.code}
+                      onChange={handleChange("code")}
+                      required
+                      fullWidth
+                      id="code"
+                      label="인증 번호를 입력하세요"
+                      name="code"
+                      autoComplete="code"
+                      style={{ background: "white", borderRadius: 5 }}
+                    />
+                  </Grid>
+                  <Grid item xs={3}>
+                    {!sendCode ? (
+                      <Button
+                        variant="contained"
+                        onClick={handleClickSendEmail}
+                        style={{
+                          color: "white",
+                          backgroundColor: "black",
+                          height: "100%",
+                        }}
+                      >
+                        인증코드
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="disabled"
+                        onClick={handleClickSendEmail}
+                        style={{
+                          color: "white",
+                          backgroundColor: "gray",
+                          height: "100%",
+                        }}
+                      >
+                        인증코드
+                      </Button>
+                    )}
+                  </Grid>
+                </>
+              ) : null}
               <Grid item xs={12}>
                 <FormControl
                   variant="outlined"
@@ -269,12 +321,20 @@ export default function SignUp() {
               sx={{ mt: 3, mb: 2 }}
               onClick={onClickHandler}
               style={
-                emailDuplication && usernameDuplication && values.password
+                emailDuplication &&
+                usernameDuplication &&
+                values.password &&
+                values.code
                   ? { color: "white", backgroundColor: "black" }
                   : { color: "white", backgroundColor: "gray" }
               }
               disabled={
-                !(emailDuplication && usernameDuplication && values.password)
+                !(
+                  emailDuplication &&
+                  usernameDuplication &&
+                  values.password &&
+                  values.code
+                )
               }
             >
               회원 가입하기
@@ -283,7 +343,7 @@ export default function SignUp() {
               <Alert severity="error">
                 <AlertTitle>Error</AlertTitle>
                 회원 가입에 실패했습니다. —{" "}
-                <strong>ID/EMAIL 중복여부 확인</strong>
+                <strong>ID/EMAIL을 제대로 입력하셨습니까?</strong>
               </Alert>
             ) : null}
             <Grid container justifyContent="flex-end">
