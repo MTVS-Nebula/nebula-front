@@ -8,6 +8,7 @@ export function SignUpAPI(values, setSignUpErr, navigate) {
       username: values.userName,
       password: values.password,
       email: values.email,
+      verificationCode: values.code,
     })
     .then((res) => {
       console.log(res);
