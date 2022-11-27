@@ -40,4 +40,12 @@ module.exports = function (app) {
       changeOrigin: true,
     })
   );
+
+  app.use(
+    "/verification/email",
+    createProxyMiddleware({
+      target: "https://auth.mtvs-nebula.com/",
+      changeOrigin: true,
+    })
+  );
 };
