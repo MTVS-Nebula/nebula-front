@@ -251,7 +251,7 @@ export default function SignUp() {
                           height: "100%",
                         }}
                       >
-                        인증코드
+                        코드전송
                       </Button>
                     ) : (
                       <Button
@@ -268,6 +268,15 @@ export default function SignUp() {
                     )}
                   </Grid>
                 </>
+              ) : null}
+              {sendCode ? (
+                <Grid item xs={12}>
+                  <div style={{ color: "#ccff33" }}>
+                    인증번호가 이메일로 전송되었습니다.
+                    <br />
+                    인증번호가 보이지 않을 경우 스펨 메일함을 확인해주세요
+                  </div>
+                </Grid>
               ) : null}
               <Grid item xs={12}>
                 <FormControl
